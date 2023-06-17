@@ -1,6 +1,7 @@
 package ge.temojudo.digitalauction.entity.users;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ge.temojudo.digitalauction.entity.auctions.AuctionEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 @Getter
@@ -30,26 +33,26 @@ public class UserEntity implements UserDetails {
             generator = "users_seq",
             strategy = GenerationType.SEQUENCE
     )
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "firstname")
     private String firstname;
 
-    @Column(name = "lastname")
     private String lastname;
 
-    @Column(name = "username", unique = true)
+    @Column(unique = true)
     private String username;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "personal_number", unique = true)
+    @Column(unique = true)
     private String personalNumber;
 
     @Transient
     private String jwt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "registrationUser", fetch = FetchType.LAZY)
+    private List<AuctionEntity> registeredAuctions = new ArrayList<>();
 
     public UserEntity(
             String firstname,
