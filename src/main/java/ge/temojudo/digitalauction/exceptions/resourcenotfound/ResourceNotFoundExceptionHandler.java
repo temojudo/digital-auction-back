@@ -16,7 +16,7 @@ public class ResourceNotFoundExceptionHandler {
     public ResponseEntity<?> handleResourceNotFoundException(MustBeUniqueException e) {
         log.error("[handleResourceNotFoundException] value {}", e.getErrors());
 
-        return new ResponseEntity<>(new ResourceNotFoundExceptionResponse(e.getErrors()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResourceNotFoundExceptionResponse(e.getErrors()), HttpStatus.NOT_FOUND);
     }
 
 }

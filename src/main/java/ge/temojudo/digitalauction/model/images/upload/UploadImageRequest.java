@@ -1,4 +1,4 @@
-package ge.temojudo.digitalauction.model.images;
+package ge.temojudo.digitalauction.model.images.upload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,23 +1,17 @@
 package ge.temojudo.digitalauction.controller.images;
 
-import ge.temojudo.digitalauction.model.images.UploadImageRequest;
-import ge.temojudo.digitalauction.model.images.UploadImageResponse;
-import ge.temojudo.digitalauction.model.users.loginuser.LoginUserRequest;
-import ge.temojudo.digitalauction.model.users.loginuser.LoginUserResponse;
-import ge.temojudo.digitalauction.model.users.registeruser.RegisterUserRequest;
-import ge.temojudo.digitalauction.model.users.registeruser.RegisterUserResponse;
+import ge.temojudo.digitalauction.model.images.download.DownloadImageRequest;
+import ge.temojudo.digitalauction.model.images.upload.UploadImageRequest;
+import ge.temojudo.digitalauction.model.images.upload.UploadImageResponse;
 import ge.temojudo.digitalauction.service.images.ImagesService;
-import ge.temojudo.digitalauction.service.users.LoginService;
-import ge.temojudo.digitalauction.service.users.RegistrationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 
 
 @Slf4j
@@ -39,6 +33,17 @@ public class ImagesController {
 
         UploadImageResponse response = imagesService.uploadImage(request);
         log.info("[uploadImage] returned response {}", response);
+
+        return response;
+    }
+
+    @GetMapping("/download/{imageId}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String imageId) {
+        DownloadImageRequest request = new DownloadImageRequest(imageId);
+        log.info("[downloadImage] called with args {}", request);
+
+        ResponseEntity<Resource> response = imagesService.downloadImage(request);
+        log.info("[downloadImage] returned response {}", response);
 
         return response;
     }
