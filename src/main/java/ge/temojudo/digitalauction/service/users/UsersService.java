@@ -61,8 +61,14 @@ public class UsersService implements UserDetailsService {
 
     public Double addUserBids(UserEntity user, Double additionalBidCount) {
         user.setBidCount(user.getBidCount() + additionalBidCount);
-        usersRepository.save(user);
+        save(user);
+
         return user.getBidCount();
+    }
+
+    public void spendBid(UserEntity user) {
+        user.setBidCount(user.getBidCount() - 1);
+        save(user);
     }
 
 }

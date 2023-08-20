@@ -30,6 +30,8 @@ public class AuctionEntity {
     )
     private Long id;
 
+    private Double currentBid = .0;
+
     private String title;
 
     @Column(length = 4095)
@@ -46,7 +48,11 @@ public class AuctionEntity {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private UserEntity registrationUser;
 
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private UserEntity buyer;
+
     public AuctionEntity(
+            Double currentBid,
             String title,
             String description,
             String photoId,
@@ -55,6 +61,7 @@ public class AuctionEntity {
             String status,
             UserEntity registrationUser
     ) {
+        this.currentBid = currentBid;
         this.title = title;
         this.description = description;
         this.photoId = photoId;

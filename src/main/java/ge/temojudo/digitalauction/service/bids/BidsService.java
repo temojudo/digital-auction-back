@@ -1,5 +1,6 @@
 package ge.temojudo.digitalauction.service.bids;
 
+import ge.temojudo.digitalauction.entity.users.UserEntity;
 import ge.temojudo.digitalauction.model.bids.buybid.BuyBidRequest;
 import ge.temojudo.digitalauction.model.bids.buybid.BuyBidResponse;
 import ge.temojudo.digitalauction.service.users.UsersService;
@@ -22,6 +23,10 @@ public class BidsService {
         Double newBidCount = usersService.addUserBids(request.getUser(), request.getBidCount());
 
         return new BuyBidResponse(newBidCount);
+    }
+
+    public void spendBid(UserEntity user) {
+        usersService.spendBid(user);
     }
 
 }

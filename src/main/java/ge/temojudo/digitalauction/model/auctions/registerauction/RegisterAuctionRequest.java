@@ -6,12 +6,16 @@ import lombok.Data;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 
 @Data
 public class RegisterAuctionRequest {
 
+    @NotNull
+    @Positive
+    private Double startingBid;
     @NotNull
     private String title;
     private String description;
