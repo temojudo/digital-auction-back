@@ -59,4 +59,10 @@ public class UsersService implements UserDetailsService {
         return usersRepository.save(userEntity);
     }
 
+    public Double addUserBids(UserEntity user, Double additionalBidCount) {
+        user.setBidCount(user.getBidCount() + additionalBidCount);
+        usersRepository.save(user);
+        return user.getBidCount();
+    }
+
 }

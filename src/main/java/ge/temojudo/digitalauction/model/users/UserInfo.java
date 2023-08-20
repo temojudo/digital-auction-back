@@ -13,13 +13,15 @@ public class UserInfo {
     private String lastname;
     private String username;
     private String personalNumber;
+    private Double bidCount;
 
     public static UserInfo fromUserEntity(UserEntity userEntity) {
         return new UserInfo(
                 userEntity.getFirstname(),
                 userEntity.getLastname(),
                 userEntity.getUsername(),
-                userEntity.getPersonalNumber()
+                userEntity.getPersonalNumber(),
+                userEntity.getBidCount()
         );
     }
 

@@ -66,7 +66,6 @@ public class AuctionsController {
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "sortByDirection", required = false) String sortByDirection
-
     ) {
         GetAuctionDashboardViewsRequest request = new GetAuctionDashboardViewsRequest(
                 pageSize,

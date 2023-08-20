@@ -47,6 +47,8 @@ public class UserEntity implements UserDetails {
     @Column(unique = true)
     private String personalNumber;
 
+    private Double bidCount = 100.0;
+
     @Transient
     private String jwt;
 
