@@ -5,7 +5,6 @@ import ge.temojudo.digitalauction.exceptions.resourcenotfound.ResourceNotFoundEx
 import ge.temojudo.digitalauction.repository.users.UsersRepository;
 import ge.temojudo.digitalauction.security.JwtUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +41,7 @@ public class UsersService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserEntity loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUserByUsername(username);
     }
 
@@ -66,8 +65,8 @@ public class UsersService implements UserDetailsService {
         return user.getBidCount();
     }
 
-    public void spendBid(UserEntity user) {
-        user.setBidCount(user.getBidCount() - 1);
+    public void spendBid(UserEntity user, Double bidCount) {
+        user.setBidCount(user.getBidCount() - bidCount);
         save(user);
     }
 

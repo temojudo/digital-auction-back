@@ -25,8 +25,8 @@ public class BidsService {
         return new BuyBidResponse(newBidCount);
     }
 
-    public void spendBid(UserEntity user) {
-        usersService.spendBid(user);
+    public void spendBid(UserEntity user, Double bidCount) {
+        usersService.spendBid(user, bidCount);
     }
 
 }

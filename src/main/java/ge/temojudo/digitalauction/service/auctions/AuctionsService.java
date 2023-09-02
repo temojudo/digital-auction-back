@@ -1,6 +1,7 @@
 package ge.temojudo.digitalauction.service.auctions;
 
 import ge.temojudo.digitalauction.entity.auctions.AuctionEntity;
+import ge.temojudo.digitalauction.entity.users.UserEntity;
 import ge.temojudo.digitalauction.exceptions.invalidargument.InvalidArgumentException;
 import ge.temojudo.digitalauction.exceptions.resourcenotfound.ResourceNotFoundException;
 import ge.temojudo.digitalauction.model.auctions.ActionDashboardSortParamName;
@@ -13,10 +14,14 @@ import ge.temojudo.digitalauction.model.auctions.getauctiondashboardviews.GetAuc
 import ge.temojudo.digitalauction.model.auctions.registerauction.RegisterAuctionRequest;
 import ge.temojudo.digitalauction.model.auctions.registerauction.RegisterAuctionResponse;
 import ge.temojudo.digitalauction.model.bids.placebid.PlaceBidRequest;
+import ge.temojudo.digitalauction.model.bids.placebid.PlaceBidResponse;
 import ge.temojudo.digitalauction.repository.auctions.AuctionsRepository;
+import ge.temojudo.digitalauction.security.JwtUtils;
 import ge.temojudo.digitalauction.service.bidlogs.BidLogsService;
 import ge.temojudo.digitalauction.service.bids.BidsService;
+import ge.temojudo.digitalauction.service.users.UsersService;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +43,8 @@ public class AuctionsService {
 
     private final BidsService bidsService;
     private final BidLogsService bidLogsService;
+    private final JwtUtils jwtUtils;
+    private final UsersService usersService;
 
     public GetAuctionResponse getAuction(GetAuctionRequest request) {
         return GetAuctionResponse.fromAuctionEntity(getAuctionEntityById(request.getId()));
@@ -73,10 +80,19 @@ public class AuctionsService {
     }
 
     @Transactional
-    public void placeBid(PlaceBidRequest request) {
+    public PlaceBidResponse placeBid(PlaceBidRequest request) throws AuthenticationException {
         AuctionEntity auction = getAuctionEntityById(request.getAuctionId());
 
-        if (Objects.equals(auction.getRegistrationUser().getId(), request.getUser().getId())) {
+        String token = request.getUserJwt().substring(7);
+
+        String username = jwtUtils.extractUsername(token);
+        UserEntity user = usersService.loadUserByUsername(username);
+
+        if (!jwtUtils.validateToken(token, user)) {
+            throw new AuthenticationException("Invalid token");
+        }
+
+        if (Objects.equals(auction.getRegistrationUser().getId(), user.getId())) {
             throw new InvalidArgumentException(
                     "auctionId",
                     String.format("couldn't place bid by registration user on auction with id [%d]", request.getAuctionId())
@@ -105,12 +121,17 @@ public class AuctionsService {
             );
         }
 
-        if (request.getUser().getBidCount() < request.getBidValue()) {
+        if (user.getBidCount() < request.getBidValue()) {
             throw new InvalidArgumentException("bidValue", "don't have any bids left");
         }
 
-        bidsService.spendBid(request.getUser());
-        bidLogsService.addBidLog(request.getBidValue(), auction, request.getUser());
+        auction.setCurrentBid(request.getBidValue());
+        auctionsRepository.save(auction);
+
+        bidsService.spendBid(user, request.getBidValue());
+        bidLogsService.addBidLog(request.getBidValue(), auction, user);
+
+        return new PlaceBidResponse(request.getBidValue());
     }
 
     private Sort getSortParam(String sortBy, String sortByDirection) {

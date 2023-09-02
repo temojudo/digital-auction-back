@@ -7,7 +7,6 @@ import ge.temojudo.digitalauction.model.auctions.getauctiondashboardviews.GetAuc
 import ge.temojudo.digitalauction.model.auctions.getauctiondashboardviews.GetAuctionDashboardViewsResponse;
 import ge.temojudo.digitalauction.model.auctions.registerauction.RegisterAuctionRequest;
 import ge.temojudo.digitalauction.model.auctions.registerauction.RegisterAuctionResponse;
-import ge.temojudo.digitalauction.model.bids.placebid.PlaceBidRequest;
 import ge.temojudo.digitalauction.service.auctions.AuctionsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,21 +83,6 @@ public class AuctionsController {
         log.info("[getAuctionDashboardViews] returned response {}", response);
 
         return response;
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{auctionId}/place-bid")
-    public void placeBid(
-            @PathVariable long auctionId,
-            @Valid @RequestBody PlaceBidRequest request,
-            Authentication authentication
-    ) {
-        request.setAuctionId(auctionId);
-        log.info("[placeBid] called with args {}", request);
-        request.setUser((UserEntity) authentication.getPrincipal());
-
-        auctionsService.placeBid(request);
-        log.info("[buyBid] returned response null");
     }
 
 }
