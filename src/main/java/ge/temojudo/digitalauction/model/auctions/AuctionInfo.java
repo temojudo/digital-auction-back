@@ -16,8 +16,8 @@ public class AuctionInfo {
     private String title;
     private String description;
     private String photoId;
-    private Date creationDate;
-    private Date startDate;
+    private String creationDate;
+    private String startDate;
     private String status;
     private String registrationUsername;
 
@@ -28,8 +28,8 @@ public class AuctionInfo {
                 auction.getTitle(),
                 auction.getDescription(),
                 auction.getPhotoId(),
-                auction.getCreationDate(),
-                auction.getStartDate(),
+                auction.getCreationDate().toString(),
+                auction.getStartDate().toString(),
                 auction.getStatus(),
                 auction.getRegistrationUser().getUsername()
         );

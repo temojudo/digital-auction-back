@@ -5,9 +5,13 @@ import ge.temojudo.digitalauction.model.auctions.AuctionDashboardView;
 import ge.temojudo.digitalauction.model.auctions.getauctiondashboardviews.GetAuctionDashboardViewsRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 
 @Repository
@@ -31,5 +35,36 @@ public interface AuctionsRepository extends CrudRepository<AuctionEntity, Long> 
                 AND (COALESCE(:#{#request.status}) IS NULL OR :#{#request.status} = a.status)
             """)
     Page<AuctionDashboardView> getAuctionDashboardViews(GetAuctionDashboardViewsRequest request, Pageable pageable);
+
+    @Query("""
+            SELECT a
+            FROM AuctionEntity a
+            WHERE
+                (a.status != 'FINISHED')
+                AND (EXTRACT(EPOCH FROM (:dateNow - a.startDate)) >= 20)
+                AND (
+                    NOT EXISTS (SELECT 1 FROM BidLogEntity bl WHERE bl.auction = a)
+                    OR EXTRACT(
+                        EPOCH FROM (:dateNow - (SELECT MAX(bl.date) FROM BidLogEntity bl WHERE bl.auction = a))
+                    ) >= 20
+                )
+            """)
+    List<AuctionEntity> getAuctionsShouldBeCompletedButIsNot(Date dateNow);
+
+    @Modifying
+    @Query("""
+            UPDATE AuctionEntity a
+            SET
+                a.status = 'FINISHED',
+                a.buyer = (
+                    SELECT bl.bidUser
+                    FROM BidLogEntity bl
+                    WHERE
+                        (bl.auction = a)
+                        AND (bl.date = (SELECT MAX(bli.date) FROM BidLogEntity bli where bli.auction = :auction))
+                )
+            WHERE a = :auction
+            """)
+    void updateAuctionAfterCompletion(AuctionEntity auction);
 
 }

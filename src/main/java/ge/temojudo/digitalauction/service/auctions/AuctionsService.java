@@ -26,13 +26,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -45,6 +43,8 @@ public class AuctionsService {
     private final BidLogsService bidLogsService;
     private final JwtUtils jwtUtils;
     private final UsersService usersService;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public GetAuctionResponse getAuction(GetAuctionRequest request) {
         return GetAuctionResponse.fromAuctionEntity(getAuctionEntityById(request.getId()));
@@ -161,6 +161,19 @@ public class AuctionsService {
 
     public Optional<AuctionEntity> findById(long id) {
         return auctionsRepository.findById(id);
+    }
+
+    @Transactional
+    public void checkCompleteAuctions() {
+        List<AuctionEntity> auctions = auctionsRepository.getAuctionsShouldBeCompletedButIsNot(new Date());
+
+        auctions.forEach(auction -> {
+            auctionsRepository.updateAuctionAfterCompletion(auction);
+            simpMessagingTemplate.convertAndSend(
+                    String.format("/topic/auctions/%d/finished", auction.getId()),
+                    ""
+            );
+        });
     }
 
 }
