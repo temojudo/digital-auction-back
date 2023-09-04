@@ -45,7 +45,7 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().authorizeRequests()
+            http.cors().and().csrf().disable().authorizeRequests()
                     .antMatchers(AUTH_WHITELIST).permitAll()
                     .anyRequest().authenticated()
                     .and().sessionManagement()
