@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                 // other public endpoints of your API may be appended to this array
                 "/users/login",
                 "/users/register",
+                "/ws/**"
         };
         private final AuthenticationFilter authenticationFilter;
 
