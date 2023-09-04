@@ -11,11 +11,15 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
 
 
 @Slf4j
 @Controller
 @AllArgsConstructor
+@Validated
 public class RealtimeAuctionsController {
 
     private final AuctionsService auctionsService;
@@ -24,7 +28,7 @@ public class RealtimeAuctionsController {
     @SendTo("/topic/auctions/{auctionId}")
     public PlaceBidResponse placeBid(
             @DestinationVariable("auctionId") long auctionId,
-            @Payload PlaceBidRequest request
+            @Valid @Payload PlaceBidRequest request
     ) throws AuthenticationException {
         request.setAuctionId(auctionId);
         log.info("[placeBid] called with args {}", request);

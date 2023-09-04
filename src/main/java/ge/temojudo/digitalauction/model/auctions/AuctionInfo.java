@@ -12,6 +12,7 @@ import java.util.Date;
 public class AuctionInfo {
 
     private long id;
+    private Double currentBid;
     private String title;
     private String description;
     private String photoId;
@@ -23,6 +24,7 @@ public class AuctionInfo {
     public static AuctionInfo fromAuctionEntity(AuctionEntity auction) {
         return new AuctionInfo(
                 auction.getId(),
+                auction.getCurrentBid(),
                 auction.getTitle(),
                 auction.getDescription(),
                 auction.getPhotoId(),
