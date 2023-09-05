@@ -4,8 +4,6 @@ import ge.temojudo.digitalauction.entity.auctions.AuctionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
-
 
 @AllArgsConstructor
 @Data
@@ -20,6 +18,7 @@ public class AuctionInfo {
     private String startDate;
     private String status;
     private String registrationUsername;
+    private String buyerUsername;
 
     public static AuctionInfo fromAuctionEntity(AuctionEntity auction) {
         return new AuctionInfo(
@@ -31,7 +30,8 @@ public class AuctionInfo {
                 auction.getCreationDate().toString(),
                 auction.getStartDate().toString(),
                 auction.getStatus(),
-                auction.getRegistrationUser().getUsername()
+                auction.getRegistrationUser().getUsername(),
+                auction.getBuyer() == null ? null : auction.getBuyer().getUsername()
         );
     }
 

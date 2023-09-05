@@ -22,8 +22,8 @@ public interface AuctionsRepository extends CrudRepository<AuctionEntity, Long> 
             SELECT NEW ge.temojudo.digitalauction.model.auctions.AuctionDashboardView (
                 a.id,
                 a.title,
-                TO_CHAR(a.creationDate, 'dd/mm/yyyy hh:mm:ss'),
-                TO_CHAR(a.startDate, 'dd/mm/yyyy hh:mm:ss'),
+                TO_CHAR(a.creationDate, 'DD/MM/YYYY HH24:MI:SS'),
+                TO_CHAR(a.startDate, 'DD/MM/YYYY HH24:MI:SS'),
                 a.status,
                 a.registrationUser.username
             )
