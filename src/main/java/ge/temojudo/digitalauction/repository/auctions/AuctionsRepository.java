@@ -25,14 +25,16 @@ public interface AuctionsRepository extends CrudRepository<AuctionEntity, Long> 
                 TO_CHAR(a.creationDate, 'DD/MM/YYYY HH24:MI:SS'),
                 TO_CHAR(a.startDate, 'DD/MM/YYYY HH24:MI:SS'),
                 a.status,
-                a.registrationUser.username
+                u.username
             )
             FROM AuctionEntity a
+            LEFT JOIN a.registrationUser u
             WHERE
                 (COALESCE(:#{#request.titleContains}) IS NULL OR LOWER(a.title) LIKE CONCAT('%', LOWER(CAST(:#{#request.titleContains} AS text)), '%'))
                 AND (COALESCE(:#{#request.startDateFrom}) IS NULL OR :#{#request.startDateFrom} <= a.startDate)
                 AND (COALESCE(:#{#request.startDateTo}) IS NULL OR :#{#request.startDateTo} >= a.startDate)
                 AND (COALESCE(:#{#request.status}) IS NULL OR :#{#request.status} = a.status)
+                AND (COALESCE(:#{#request.registrationUsername}) IS NULL OR :#{#request.registrationUsername} = u.username)
             """)
     Page<AuctionDashboardView> getAuctionDashboardViews(GetAuctionDashboardViewsRequest request, Pageable pageable);
 

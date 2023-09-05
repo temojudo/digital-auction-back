@@ -64,6 +64,7 @@ public class AuctionsController {
             @RequestParam(value = "startDateFrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX") Date startDateFrom,
             @RequestParam(value = "startDateTo", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX") Date startDateTo,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "registrationUsername", required = false) String registrationUsername,
             @RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "sortByDirection", required = false) String sortByDirection
     ) {
@@ -74,6 +75,7 @@ public class AuctionsController {
                 startDateFrom,
                 startDateTo,
                 status,
+                registrationUsername,
                 sortBy,
                 sortByDirection
         );
