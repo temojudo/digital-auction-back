@@ -18,6 +18,7 @@ public class GetAuctionDashboardViewsRequest {
     private Date startDateTo;
     private String status;
     private String registrationUsername;
+    private String buyerUsername;
 
     private String sortBy;
     private String sortByDirection;
